@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
+import {URL_API_BASE, URL_IMAGE_BASE} from '../../../../config'
 
 export default function DashboardProductCreate(props) {
 
@@ -13,7 +14,7 @@ export default function DashboardProductCreate(props) {
     const [isCheckedLarge, setIsCheckedLarge] = useState(false);
     const [inputValue, setInputValue] = useState([])
     const [cate, setCate] = useState([])
-    const [cateValue, setCateValue] = useState("")
+    const [cateValue, setCateValue] = useState(0)
     const [size, setSize] = useState([])
     const [sex, setSex] = useState("")
     const [file, setFile] = useState([])
@@ -52,19 +53,32 @@ export default function DashboardProductCreate(props) {
     const handleOnChange = (event) => {
         setInputValue({...inputValue, [event.target.name]: event.target.value})
     }
+
+    const setCateV2 = (event) => {
+        let cate_id = 1;
+        for(let i =0; i<cate.length; i++){
+            if(cate[i].name == event.target.value){
+                cate_id=cate[i].id;
+                break;
+            }
+        }
+        setCateValue(cate_id)
+    }
     
     useEffect(()=> {
-        axios.get(`http://pe.heromc.net:4000/products`)
+        axios.get(`${URL_API_BASE}/product`)
             .then(res => {
-                const test = Object.values(res.data.reduce((a, {productGroupCate}) => {
-                    a[productGroupCate] = a[productGroupCate] || {productGroupCate};
+                res.data = res.data.data
+                const test = Object.values(res.data.reduce((a, {category_name}) => {
+                    a[category_name] = a[category_name] || {category_name};
                     return a;
                 }, Object.create(null)));
                 setProductGroupCateList(test)
             }
         )
-        axios.get(`http://pe.heromc.net:4000/category`)
+        axios.get(`${URL_API_BASE}/category`)
             .then(res => {
+                res.data = res.data.data
                 setCate(res.data)
             }) 
     },[])
@@ -81,19 +95,16 @@ export default function DashboardProductCreate(props) {
 
         const imageArr = Array.from(file);
         imageArr.forEach(image => {
-            formData.append('productImg', image);
+            formData.append('images', image);
         });
 
-        formData.append("productName", inputValue.name);
-        formData.append("productSale", inputValue.sale);
-        formData.append("productPrice", inputValue.price);
-        formData.append("productCate", cateValue);
-        formData.append("productGroupCate", productGroupCate);
-        formData.append("productSize", size);
-        formData.append("productDes", inputValue.des);
-        formData.append("productSex", sex);
-        formData.append("productDate", new Date());
-        axios.post('http://pe.heromc.net:4000/products', formData, config)
+        formData.append("name", inputValue.name);
+        formData.append("sale", inputValue.sale);
+        formData.append("current_price", inputValue.price);
+        formData.append("category_id", cateValue);
+        formData.append("description", inputValue.des);
+        formData.append("type", sex);
+        axios.post(`${URL_API_BASE}/product`, formData, config)
         .then(()=>{
             props.setCloseCreateFunc(false);
             props.setToastFunc(true);
@@ -101,10 +112,10 @@ export default function DashboardProductCreate(props) {
     }
 
     const addNewCate = () => {
-        axios.post('http://pe.heromc.net:4000/category', {
-            cateName: inputValue.cate
+        axios.post(`${URL_API_BASE}/category`, {
+            name: inputValue.cate
         })
-        setCate(cate=>[...cate, {cateName: inputValue.cate}])
+        setCate(cate=>[...cate, {name: inputValue.cate}])
         setCateValue(inputValue.cate)
         cateInput.current.value = ""
     }
@@ -164,7 +175,7 @@ export default function DashboardProductCreate(props) {
                                     })
                                 }}
                                 type="file"
-                                name="productImg"
+                                name="images"
                                 className="noborder"
                                 multiple="multiple"
                                 style={{height: '50px'}}
@@ -194,20 +205,20 @@ export default function DashboardProductCreate(props) {
                     <div className="create-box-row flex">
                         <div className="dashboard-left flex">Defaut price </div>
                         <div className="dashboard-right">
-                            <input type="number" name="price" placeholder="USD" onChange={handleOnChange} required></input>
+                            <input type="number" name="price" placeholder="Price" onChange={handleOnChange} required></input>
                         </div>
                     </div>
                     <div className="create-box-row flex">
                         <div className="dashboard-left flex">Sale off </div>
                         <div className="dashboard-right flex-center">
                             <input type="number" placeholder="%" style={{ width: "100px"}} onChange={handleOnChange} name="sale" required></input>
-                            <label>From: </label>
+                            {/* <label>From: </label>
                             <input type="date"  name="fromdate" onChange={handleOnChange} placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)"/>
                             <label>To: </label>
-                            <input type="date"  name="todate" onChange={handleOnChange} placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)"/>
+                            <input type="date"  name="todate" onChange={handleOnChange} placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)"/> */}
                         </div>
                     </div>
-                    <div className="create-box-row flex">
+                    {/* <div className="create-box-row flex">
                         <div className="dashboard-left flex">Category group</div>
                         <div className="dashboard-right flex-center">
                             <select style={{ width: "350px"}} 
@@ -217,7 +228,7 @@ export default function DashboardProductCreate(props) {
                                 { productGroupCateList.length > 0 &&
                                     productGroupCateList.map((item, index) => {
                                         return(
-                                            <option key={index}>{item.productGroupCate}</option>
+                                            <option key={index}>{item.category_name}</option>
                                         )
                                     })
                                 }
@@ -236,18 +247,18 @@ export default function DashboardProductCreate(props) {
                                 Add
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="create-box-row flex">
                         <div className="dashboard-left flex">Category </div>
                         <div className="dashboard-right flex-center">
                             <select style={{ width: "350px"}} 
-                                onChange={(event) => {setCateValue(event.target.value)}}
-                                value={cateValue}>
+                                onChange={(event) => {setCateV2(event)}}
+                                >
                                 <option></option>
                                 { cate.length > 0 &&
                                     cate.map((item, index) => {
                                         return(
-                                            <option key={index}>{item.cateName}</option>
+                                            <option key={index}>{item.name}</option>
                                         )
                                     })
                                 }
@@ -268,7 +279,7 @@ export default function DashboardProductCreate(props) {
                         </div>
                     </div>
                     <div className="create-box-row flex">
-                        <div className="dashboard-left flex">Sex </div>
+                        <div className="dashboard-left flex">Type </div>
                         <div className="dashboard-right flex">
                             <select style={{ width: "200px"}} 
                                 onChange={(event) => {setSex(event.target.value)}}
@@ -280,7 +291,7 @@ export default function DashboardProductCreate(props) {
                             </select>
                         </div>
                     </div>
-                    <div className="create-box-row flex">
+                    {/* <div className="create-box-row flex">
                         <div className="dashboard-left flex">Size </div>
                         <div className="dashboard-right flex">
                             <div 
@@ -296,7 +307,7 @@ export default function DashboardProductCreate(props) {
                                 id="3" 
                                 onClick={checkedSize}>Large</div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className="create-box-row flex">
                         <div className="dashboard-left flex">Description </div>
                         <div className="dashboard-right">

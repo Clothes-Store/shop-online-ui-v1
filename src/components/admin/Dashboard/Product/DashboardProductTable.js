@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import classNames from 'classnames'
+import {URL_API_BASE, URL_IMAGE_BASE} from '../../../../config'
 
 export default function DashboardProductTable(props) {
 
@@ -17,10 +18,10 @@ export default function DashboardProductTable(props) {
     const [isSortBySold, setIsSortBySold] = useState(false)
     
     useEffect(()=>{
-        axios.get(`http://pe.heromc.net:4000/products`)
+        axios.get(`${URL_API_BASE}/product`)
             .then(res => {
-                setProducts(res.data)
-                setConstProducts(res.data)
+                setProducts(res.data.data)
+                setConstProducts(res.data.data)
             }
         )
     },[props.isChange]) 
@@ -103,11 +104,9 @@ export default function DashboardProductTable(props) {
     }
 
     const deleteOnClick = (event) => {
-        axios.post(`http://pe.heromc.net:4000/products/delete/:${event.target.id}`, {
-            productId: event.target.id
-        })
+        axios.delete(`${URL_API_BASE}/product/${event.target.id}`)
         setProducts(products.filter((item)=>{
-            return item._id !== event.target.id
+            return item.id !== event.target.id
         }))
     }
 
@@ -118,7 +117,7 @@ export default function DashboardProductTable(props) {
         const searchInput = event.target.value
         const search = []
         for (let i in constProducts) {
-            if ((constProducts[i].productName).toLowerCase().includes(searchInput)) {
+            if ((constProducts[i].name).toLowerCase().includes(searchInput)) {
                 search.push(constProducts[i])
             }
         }
@@ -130,8 +129,8 @@ export default function DashboardProductTable(props) {
             if (isSortByName) {
                 const sortByName = [...products]
                 sortByName.sort(function(a, b) {
-                    var nameA = a.productName.toLowerCase();
-                    var nameB = b.productName.toLowerCase(); 
+                    var nameA = a.name.toLowerCase();
+                    var nameB = b.name.toLowerCase(); 
                     if(nameA == nameB) return 0; 
                     return nameA > nameB ? 1 : -1;
                 })
@@ -140,8 +139,8 @@ export default function DashboardProductTable(props) {
             } else {
                 const sortByName = [...products]
                 sortByName.sort(function(a, b) {
-                    var nameA = a.productName.toLowerCase();
-                    var nameB = b.productName.toLowerCase(); 
+                    var nameA = a.name.toLowerCase();
+                    var nameB = b.name.toLowerCase(); 
                     if(nameA == nameB) return 0; 
                     return nameA < nameB ? 1 : -1;
                 })
@@ -153,8 +152,8 @@ export default function DashboardProductTable(props) {
             if (isSortByPrice) {
                 const sortByPrice = [...products]
                 sortByPrice.sort(function(a, b) {
-                    var priceA = a.productPrice;
-                    var priceB = b.productPrice; 
+                    var priceA = a.current_price;
+                    var priceB = b.current_price; 
                     if(priceA == priceB) return 0; 
                     return priceA > priceB ? 1 : -1;
                 })
@@ -163,8 +162,8 @@ export default function DashboardProductTable(props) {
             } else {
                 const sortByPrice = [...products]
                 sortByPrice.sort(function(a, b) {
-                    var priceA = a.productPrice;
-                    var priceB = b.productPrice; 
+                    var priceA = a.current_price;
+                    var priceB = b.current_price; 
                     if(priceA == priceB) return 0; 
                     return priceA < priceB ? 1 : -1;
                 })
@@ -176,8 +175,8 @@ export default function DashboardProductTable(props) {
             if (isSortBySale) {
                 const sortBySale = [...products]
                 sortBySale.sort(function(a, b) {
-                    var saleA = a.productSale;
-                    var saleB = b.productSale; 
+                    var saleA = a.sale;
+                    var saleB = b.sale; 
                     if(saleA == saleB) return 0; 
                     return saleA > saleB ? 1 : -1;
                 })
@@ -186,36 +185,13 @@ export default function DashboardProductTable(props) {
             } else {
                 const sortBySale = [...products]
                 sortBySale.sort(function(a, b) {
-                    var saleA = a.productSale;
-                    var saleB = b.productSale; 
+                    var saleA = a.sale;
+                    var saleB = b.sale; 
                     if(saleA == saleB) return 0; 
                     return saleA < saleB ? 1 : -1;
                 })
                 setIsSortBySale(true)
                 setProducts(sortBySale)
-            }
-        }
-        if (event.target.id == "ProductSold") {
-            if (isSortBySold) {
-                const sortBySold = [...products]
-                sortBySold.sort(function(a, b) {
-                    var SoldA = a.productSold;
-                    var SoldB = b.productSold; 
-                    if(SoldA == SoldB) return 0; 
-                    return SoldA > SoldB ? 1 : -1;
-                })
-                setIsSortBySold(false)
-                setProducts(sortBySold)
-            } else {
-                const sortBySold = [...products]
-                sortBySold.sort(function(a, b) {
-                    var SoldA = a.productSold;
-                    var SoldB = b.productSold; 
-                    if(SoldA == SoldB) return 0; 
-                    return SoldA < SoldB ? 1 : -1;
-                })
-                setIsSortBySold(true)
-                setProducts(sortBySold)
             }
         }
     }
@@ -262,56 +238,56 @@ export default function DashboardProductTable(props) {
                             </tr>
                             {
                                 current.map((item, index) => {
-                                    const date = new Date(item.productDate)
+                                    const date = new Date(item.created)
                                     const day = date.getDate();
                                     const month = date.getMonth() + 1;
                                     const year = date.getFullYear();
                                     const shortedDate = day + '/' + month + '/' + year;
                                     //Counting star vote
-                                    const ratingList = item.productVote.map(a => a.ratingStar); // get all rating
+                                    // const ratingList = item.productVote.map(a => a.ratingStar); // get all rating
                                     
-                                    const totalRating = ratingList.reduce((a, b) => a + b, 0);
+                                    // const totalRating = ratingList.reduce((a, b) => a + b, 0);
 
-                                    var averageRating = 0;
-                                    if (totalRating == 0) {
-                                        averageRating = 0
-                                    } else {
-                                        averageRating = totalRating/Number(ratingList.length);
-                                    }
+                                    // var averageRating = 0;
+                                    // if (totalRating == 0) {
+                                    //     averageRating = 0
+                                    // } else {
+                                    //     averageRating = totalRating/Number(ratingList.length);
+                                    // }
 
                                     return (
                                         <tr key={index}>
                                             <td className="table-name table-mobile-productname">
-                                                <p>{item.productName}</p>
+                                                <p>{item.name}</p>
                                             </td>
                                             <td className="table-mobile-productimages" style={{display: 'flex'}}>
                                                 <img 
-                                                    src={item.productImg[0]} 
+                                                    src={`${URL_IMAGE_BASE}/${item.imgs[0].img.replace('public\\', '').replaceAll('\\','/')}`} 
                                                     width="70px" height="80px"
                                                     style={{padding: '5px 0'}}
                                                     alt=""
                                                 />
                                             </td>
                                             <td>
-                                                <p>{item.productPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} đ</p>
+                                                <p>{item.current_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} đ</p>
                                             </td>
-                                            { item.productSale > 0 &&
+                                            { item.sale > 0 &&
                                                 <td className="table-mobile-productsale">
-                                                    <p style={{color: 'green'}}>{item.productSale}%</p>
+                                                    <p style={{color: 'green'}}>{item.sale}%</p>
                                                 </td>
                                             }
-                                            { item.productSale == 0 &&
+                                            { item.sale == 0 &&
                                                 <td className="table-mobile-productsale">
                                                     <p style={{color: 'red'}}>No sale</p>
                                                 </td>
                                             }
-                                            <td className="table-mobile-productsold">
+                                            {/* <td className="table-mobile-productsold">
                                                 <p>{item.productSold}</p>
-                                            </td>
+                                            </td> */}
                                             <td className="table-mobile-productdate">
                                                 <p>{shortedDate}</p>
                                             </td>
-                                            <td className="star-rating">
+                                            {/* <td className="star-rating">
                                                 <div className="star-rating-list flex">
                                                     <p className={ 
                                                         averageRating > 0 ? "star-color star" :"star"
@@ -329,20 +305,20 @@ export default function DashboardProductTable(props) {
                                                         averageRating > 4 ? "star-color star" :"star"
                                                     }>★</p>
                                                 </div>
-                                            </td>
+                                            </td> */}
                                             <td>
                                                 <div className="action-table flex">
                                                     <div 
                                                         className="action-item flex-center action-green"
                                                         onClick={props.setOpenEditFunc}
-                                                        id={item._id}
+                                                        id={item.id}
                                                         >
                                                         <FontAwesomeIcon style={{pointerEvents: 'none'}} icon={faPencilAlt}/>
                                                     </div>
                                                     <div 
                                                         className="action-item flex-center action-red"
                                                         onClick={deleteOnClick}
-                                                        id={item._id}
+                                                        id={item.id}
                                                         >
                                                         <FontAwesomeIcon style={{pointerEvents: 'none'}} icon={faTimes}/>
                                                     </div>

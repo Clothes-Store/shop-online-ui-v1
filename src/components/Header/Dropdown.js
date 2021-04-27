@@ -24,7 +24,7 @@ function Dropdown(props) {
     return(
         <div className="Dropdown">
             <div className="dropdown-container flex">
-                { props.dropdownContent.map((item, index) => {
+                {/* { props.dropdownContent.map((item, index) => {
                     return (
                         <div 
                             className="dropdown-col flex"
@@ -58,7 +58,7 @@ function Dropdown(props) {
                             </div>
                         </div>
                     )
-                })}
+                })} */}
                 { props.label == 'Women' &&
                     <DropdownSlider 
                         width={"450"} 

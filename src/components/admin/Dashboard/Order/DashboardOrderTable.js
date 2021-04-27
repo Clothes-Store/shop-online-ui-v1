@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import classNames from 'classnames'
+import {URL_API_BASE, URL_IMAGE_BASE} from '../../../../config'
 
 export default function DashboardUserTable(props) {
 
@@ -14,8 +15,10 @@ export default function DashboardUserTable(props) {
     const [constOrder, setConstOrder] = useState([])
     
     useEffect(()=>{
-        axios.get(`http://pe.heromc.net:4000/order`)
+        axios.get(`${URL_API_BASE}/order/all`)
             .then(res => {
+                res.data = res.data.data;
+                console.log(res.data)
                 setOrder(res.data)
                 setConstOrder(res.data)
             }
@@ -187,10 +190,7 @@ export default function DashboardUserTable(props) {
                 </div>
                 <div className="topfive-content flex-col">
                     <div className="dashboard-addnew flex">
-                        <div 
-                            className="dashboard-addnew-btn btn"
-                            onClick={props.setOpenCreateFunc}
-                        >Add new</div>
+                       
                         <div className="dashboard-addnew-search">
                             <form 
                                 onSubmit={searchOnSubmit}
@@ -222,49 +222,47 @@ export default function DashboardUserTable(props) {
                             </tr>
                             {
                                 current.map((item, index) => {
-                                    const date = new Date(item.orderDate)
+                                    const date = new Date(item.date)
                                     const day = date.getDate()
                                     const month = date.getMonth() + 1
                                     const year = date.getFullYear()
                                     var totalItem = 0;
-                                    for (let i in item.orderList) {
-                                        totalItem += item.orderList[i].amount
+                                    var totalPrice = 0;
+                                    for (let i =0; i <  item.order_list.length; i++) {
+                                        totalItem += item.order_list[i].amount
+                                        totalPrice += item.order_list[i].amount * item.order_list[i].price_each
                                     }
                                     return (
                                         <tr key={index} className="mobile-table">
                                             <td className="mobile-table-orderinfo">
                                                 <ul style={{margin: '10px 0'}}>
                                                     <li className="flex">
-                                                        <p style={{marginRight: '5px', fontWeight: 'bold'}}>#{item.orderId}</p> 
-                                                        <p className="mobile-table-name">by {item.orderName}</p>
+                                                        <p style={{marginRight: '5px', fontWeight: 'bold'}}>#{index}</p> 
                                                     </li>
                                                 </ul>    
                                             </td>
                                             <td className="mobile-table-shippinginfo"> 
-                                                <div className="flex" style={{alignItems: 'center',margin: '10px 0'}}>
-                                                    <p 
-                                                        style={{wordWrap: 'break-word', WebkitLineClamp: '3'}}
-                                                    >{item.orderAddress}, {item.orderHuyen}, {item.orderTinh}</p>
-                                                </div> 
+                                                {item.order_list.map((i,index) => <p key={index} style={{margin: '10px 0', width: '100%', WebkitLineClamp: '2'}}>{i.name} -- {i.number}</p>)}
+                                              
                                             </td>
                                             <td>
                                                 <p>{day}-{month}-{year}</p>
                                             </td>
                                             <td className="mobile-table-paymentmethod">
-                                                <p style={{textTransform: 'capitalize'}}>{item.orderPaymentMethod}</p>
+                                                <p style={{textTransform: 'capitalize'}}>{item.payment_method == 0 ? "Thanh toán khi nhận hàng" : "Không xác định"}</p>
                                             </td>
                                             <td>
-                                                {   typeof(totalItem) == 'number' &&
+                                                
                                                         <div key={index} className="flex" style={{justifyContent: 'space-between'}}>
                                                             {/* <p style={{margin: '10px 0', width: '100%', WebkitLineClamp: '2'}}>{virtualArr.productName}</p> */}
-                                                            <p style={{margin: '10px 0', width: '50px', marginLeft: '20px'}}>{totalItem}</p>
+                                                            <p style={{margin: '10px 0', width: '50px', marginLeft: '20px'}}>{item.order_list.reduce((a,b) => { return a + b.number}, 0)}</p>
                                                         </div>
-                                                }
+                                                
                                             </td>
                                             <td className="mobile-table-totalmoney">
-                                                <p>{item.orderTotal} đ</p>
+                                                <p>{item.order_list.reduce((a,b) => { return a + b.number * b.price_each}, 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} đ</p>
                                             </td>
-                                            <td>
+                                            {/* <td>
                                                 <div className="action-table flex">
                                                     <div 
                                                         className="action-item flex-center action-green"
@@ -281,7 +279,7 @@ export default function DashboardUserTable(props) {
                                                         <FontAwesomeIcon style={{pointerEvents: 'none'}} icon={faTimes}/>
                                                     </div>
                                                 </div>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     )
                                 })

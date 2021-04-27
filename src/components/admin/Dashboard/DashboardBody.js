@@ -24,6 +24,7 @@ import DashboardCollection from './Collection/DashboardCollection';
 import DashboardSubscriberCreate from './Subscriber/DashboardSubscriberCreate';
 import DashboardSubscriberEdit from './Subscriber/DashboardSubscriberEdit';
 import DashboardSubscriber from './Subscriber/DashboardSubscriber';
+import {URL_API_BASE, URL_IMAGE_BASE} from '../../../config'
 
 export default function DashboardBody(props) {
 
@@ -48,38 +49,38 @@ export default function DashboardBody(props) {
         }, 3000)
     }
     
-    useEffect(()=> {
-        Axios.get(`http://pe.heromc.net:4000/products/${props.productId}`)
-            .then(res => {
-                setProduct(res.data)
-            } 
-        )
-        Axios.get(`http://pe.heromc.net:4000/news/${props.productId}`)
-            .then(res => {
-                setNews(res.data)
-            } 
-        )
-        Axios.get(`http://pe.heromc.net:4000/users/list/${props.productId}`)
-            .then(res => {
-                setUser(res.data)
-            } 
-        )
-        Axios.get(`http://pe.heromc.net:4000/order/${props.productId}`)
-            .then(res => {
-                setOrder(res.data)
-            } 
-        )
-        Axios.get(`http://pe.heromc.net:4000/collection/${props.productId}`)
-            .then(res => {
-                setCollection(res.data)
-            } 
-        )
-        Axios.get(`http://pe.heromc.net:4000/email/${props.productId}`)
-            .then(res => {
-                setEmail(res.data)
-            } 
-        )
-    },[props.productId, props.openEdit])
+    // useEffect(()=> {
+    //     Axios.get(`${URL_API_BASE}/product/${props.productId}`)
+    //         .then(res => {
+    //             setProduct(res.data.data)
+    //         } 
+    //     )
+    //     Axios.get(`http://pe.heromc.net:4000/news/${props.productId}`)
+    //         .then(res => {
+    //             setNews(res.data)
+    //         } 
+    //     )
+    //     Axios.get(`http://pe.heromc.net:4000/users/list/${props.productId}`)
+    //         .then(res => {
+    //             setUser(res.data)
+    //         } 
+    //     )
+    //     Axios.get(`http://pe.heromc.net:4000/order/${props.productId}`)
+    //         .then(res => {
+    //             setOrder(res.data)
+    //         } 
+    //     )
+    //     Axios.get(`http://pe.heromc.net:4000/collection/${props.productId}`)
+    //         .then(res => {
+    //             setCollection(res.data)
+    //         } 
+    //     )
+    //     Axios.get(`http://pe.heromc.net:4000/email/${props.productId}`)
+    //         .then(res => {
+    //             setEmail(res.data)
+    //         } 
+    //     )
+    // },[props.productId, props.openEdit])
     const openMenuMobile = props.openMenuMobile;
 
     return (
@@ -120,7 +121,7 @@ export default function DashboardBody(props) {
                     product={product}
                 />
             }
-            { (props.openCreate && tabId == "5") &&
+            {/* { (props.openCreate && tabId == "5") &&
                 <DashboardNewsCreate
                     setCloseCreateFunc={props.setCloseCreateFunc}
                     setToastFunc={setToastFunc}
@@ -132,7 +133,7 @@ export default function DashboardBody(props) {
                     setToastFunc={setToastFunc}
                     news={news} 
                 />
-            }
+            } */}
             { (props.openCreate && tabId == "6") &&
                 <DashboardUserCreate
                     setCloseCreateFunc={props.setCloseCreateFunc}
@@ -161,7 +162,7 @@ export default function DashboardBody(props) {
                 />
             }
 
-            { (props.openCreate && tabId == "8") &&
+            {/* { (props.openCreate && tabId == "8") &&
                 <DashboardSubscriberCreate
                     setCloseCreateFunc={props.setCloseCreateFunc}
                     setToastFunc={setToastFunc}
@@ -173,19 +174,19 @@ export default function DashboardBody(props) {
                     setToastFunc={setToastFunc}
                     email={email} 
                 />
-            }
-            <DashboardHeader
+            } */}
+            {/* <DashboardHeader
                 itemName= {props.menuItems[tabId-1].name}
                 setOpenMenuOnClick = {props.setOpenMenuOnClick}
                 openMenu = {props.openMenu}
                 orderNotice = {props.orderNotice}
-            />
+            /> */}
             {
                 tabId == "1" && <DashboardMain/>
             }
-            {
+            {/* {
                 tabId == "2" && <DashboardInbox/>
-            }
+            } */}
             {/* {
                 tabId == "2" && 
                     <DashboardEmail
@@ -210,7 +211,7 @@ export default function DashboardBody(props) {
                     isChange={isChange}
                 />
             }
-            {
+            {/* {
                 tabId == "5" && 
                 <DashboardNews
                     setOpenCreateFunc={props.setOpenCreateFunc}
@@ -218,7 +219,7 @@ export default function DashboardBody(props) {
                     toast={toast}
                     isChange={isChange}
                 />
-            }
+            } */}
             {
                 tabId == "6" && 
                 <DashboardUser
@@ -237,7 +238,7 @@ export default function DashboardBody(props) {
                     isChange={isChange}
                 />
             }
-            {
+            {/* {
                 tabId == "8" && 
                 <DashboardSubscriber
                     setOpenCreateFunc={props.setOpenCreateFunc}
@@ -245,7 +246,7 @@ export default function DashboardBody(props) {
                     toast={toast}
                     isChange={isChange}
                 />
-            }
+            } */}
         </div>
     )
 }

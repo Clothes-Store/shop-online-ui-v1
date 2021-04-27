@@ -11,8 +11,7 @@ export default function DashboardUser(props) {
         "Name",
         "Email",
         "Phone",
-        "Address",
-        "Action"
+        "Address"
     ]
 
     return (

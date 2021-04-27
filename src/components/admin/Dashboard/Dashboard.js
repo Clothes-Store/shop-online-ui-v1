@@ -5,10 +5,10 @@ import DashboardBody from './DashboardBody'
 import DashboardMenu from './DashboardMenu'
 import { faEnvelope, faFileInvoice, faHome, faInbox, faNewspaper, faShoppingBag, faTshirt, faUser } from '@fortawesome/free-solid-svg-icons'
 
-import socketIOClient from "socket.io-client" 
+// import socketIOClient from "socket.io-client" 
 import Axios from 'axios'
 import { withRouter } from 'react-router-dom'
-const ENDPOINT = "http://pe.heromc.net:4000";
+import {URL_API_BASE} from '../../../config'
 
 function Dashboard(props) {
     const menuItems = [
@@ -17,11 +17,11 @@ function Dashboard(props) {
             name: "Dashboard",
             icon: faHome
         },
-        {
-            id: "2",
-            name: "Live Chat",
-            icon: faInbox
-        },
+        // {
+        //     id: "2",
+        //     name: "Live Chat",
+        //     icon: faInbox
+        // },
         // {
         //     id: "3",
         //     name: "Email",
@@ -37,57 +37,57 @@ function Dashboard(props) {
             name: "Products",
             icon: faTshirt
         },
-        {
-            id: "5",
-            name: "News",
-            icon: faNewspaper
-        },
+        // {
+        //     id: "5",
+        //     name: "News",
+        //     icon: faNewspaper
+        // },
         {
             id: "6",
             name: "Users",
             icon: faUser
         },
-        {
-            id: "7",
-            name: "Collection",
-            icon: faShoppingBag
-        },
-        {
-            id: "8",
-            name: "Subscribers",
-            icon: faEnvelope
-        },
+        // {
+        //     id: "7",
+        //     name: "Collection",
+        //     icon: faShoppingBag
+        // },
+        // {
+        //     id: "8",
+        //     name: "Subscribers",
+        //     icon: faEnvelope
+        // },
     ]
     const [tabId, setTabId] = useState("1");
     const [openMenu, setOpenMenu] = useState(true); 
     const [openMenuMobile, setOpenMenuMobile] = useState(true); 
     const [productId, setProductId] = useState("")
 
-    const socket = socketIOClient(ENDPOINT);
+    // const socket = socketIOClient(ENDPOINT);
 
     const [orderNotice, setOrderNotice] = useState(null) 
     const [userInfo, setUserInfo] = useState(null)
 
     useEffect(()=>{
         if (localStorage.getItem('token')) {
-            Axios.get(`http://pe.heromc.net:4000/users/${localStorage.getItem('user-id')}`, { 
+            Axios.get(`${URL_API_BASE}/user/${localStorage.getItem('user-id')}`, { 
                 headers: {"authorization" : `Bearer ${localStorage.getItem('token')}`}
             })
             .then(res => {
-                setUserInfo(res.data.user)
-                const userInfo = res.data.user; 
-                if (userInfo.userRole == 'admin') {
-                    socket.emit('join', {
-                        sessionId: 'admin',
-                        isAdmin: true
-                    })
-                    socket.on("placeAnOrder-notice", function(data) {
-                        setOrderNotice(data)
-                    }) 
-                } else {
-                    localStorage.setItem("errLogin", "You do not have Administrator access!")
-                    props.history.push('/admin') 
-                }
+                setUserInfo(res.data.data.user)
+                // const userInfo = res.data.user; 
+                // if (userInfo.userRole == 'admin') {
+                //     socket.emit('join', {
+                //         sessionId: 'admin',
+                //         isAdmin: true
+                //     })
+                //     socket.on("placeAnOrder-notice", function(data) {
+                //         setOrderNotice(data)
+                //     }) 
+                // } else {
+                //     localStorage.setItem("errLogin", "You do not have Administrator access!")
+                //     props.history.push('/admin') 
+                // }
             })
             .catch(err => { 
                 console.log(err)

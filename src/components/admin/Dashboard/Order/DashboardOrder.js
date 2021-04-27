@@ -15,18 +15,16 @@ export default function DashboardOrder(props) {
                 "Date",
                 "PaymentMethod",
                 "Items",
-                "Total Money",
-                "Action"
+                "Total Money"
             ])
         } else {
             setTable([
-                "Order Info",
-                "ShippingInfo",
+                "Order Id",
+                "Order details",
                 "Date",
                 "PaymentMethod",
                 "Items",
-                "Total Money",
-                "Action"
+                "Total Money"
             ])
         }
         function handleResize() {

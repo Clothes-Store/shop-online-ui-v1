@@ -57,7 +57,7 @@ export default function DashboardOrderCreate(props) {
     const [user, setUser] = useState("")
 
     useEffect(()=>{
-        axios.get(`http://pe.heromc.net:4000/users/list`)
+        axios.get(`http://localhost:4000/api/user/all`)
             .then(res => {
                 setUserList(res.data)
                 res.data.filter((item)=>{

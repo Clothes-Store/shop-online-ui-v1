@@ -120,11 +120,11 @@ function Header(props) {
                         return index == self.indexOf(elem);
                     })
                     // console.log(cateList)
-                    menData = {
-                        dropdownTitle: groupCateMen[i],
-                        dropdownList: cateList2
-                    }
-                    menDropdownContent.push(menData)
+                    // menData = {
+                    //     dropdownTitle: groupCateMen[i],
+                    //     dropdownList: cateList2
+                    // }
+                    // menDropdownContent.push(menData)
                 }
                 const womenDropdownContent = []
                 for (let i in groupCateWomen) {
@@ -138,20 +138,20 @@ function Header(props) {
                     let cateList2 = cateList.filter(function(elem, index, self) {
                         return index == self.indexOf(elem);
                     })
-                    womenData = {
-                        dropdownTitle: groupCateWomen[i],
-                        dropdownList: cateList2
-                    }
-                    womenDropdownContent.push(womenData)
+                    // womenData = {
+                    //     dropdownTitle: groupCateWomen[i],
+                    //     dropdownList: cateList2
+                    // }
+                    // womenDropdownContent.push(womenData)
                 }
-                for (let i in virtualNavBar) {
-                    if (virtualNavBar[i].label == "Men") {
-                        virtualNavBar[i].dropdownContent = menDropdownContent
-                    }
-                    if (virtualNavBar[i].label == "Women") {
-                        virtualNavBar[i].dropdownContent = womenDropdownContent
-                    }
-                }
+                // for (let i in virtualNavBar) {
+                //     if (virtualNavBar[i].label == "Men") {
+                //         virtualNavBar[i].dropdownContent = menDropdownContent
+                //     }
+                //     if (virtualNavBar[i].label == "Women") {
+                //         virtualNavBar[i].dropdownContent = womenDropdownContent
+                //     }
+                // }
                 setNavBar(virtualNavBar)
             }
         )

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
+import {URL_API_BASE, URL_IMAGE_BASE} from '../../../../config'
 
 export default function DashboardProductEdit(props) {
 
@@ -28,81 +29,82 @@ export default function DashboardProductEdit(props) {
     const [productSize, setProductSize] = useState([])
     const [productSex, setProductSex] = useState([])
 
-    const checkedSize = (event) => {
-        if (event.target.id == "1") {
-            if (isCheckedSmall) {
-                const size = productSize.filter((item)=> {
-                    return item !== 'Small'
-                })
-                setProductSize(size)
-                setIsCheckedSmall(false)
-            } else {
-                setProductSize(productSize=>[...productSize, 'Small'])
-                setIsCheckedSmall(true)
-            }
-        }
-        if (event.target.id == "2") {
-            if (isCheckedMedium) {
-                const size = productSize.filter((item)=> {
-                    return item !== 'Medium'
-                })
-                setProductSize(size)
-                setIsCheckedMedium(false)
-            } else {
-                setProductSize(productSize=>[...productSize, 'Medium'])
-                setIsCheckedMedium(true)
-            }
-        }
-        if (event.target.id == "3") {
-            const size = productSize.filter((item)=> {
-                return item !== 'Large'
-            })
-            setProductSize(size)
-            if (isCheckedLarge) {
-                setIsCheckedLarge(false)
-            } else {
-                setProductSize(productSize=>[...productSize, 'Large'])
-                setIsCheckedLarge(true)
-            }
-        }
-    }
+    // const checkedSize = (event) => {
+    //     if (event.target.id == "1") {
+    //         if (isCheckedSmall) {
+    //             const size = productSize.filter((item)=> {
+    //                 return item !== 'Small'
+    //             })
+    //             setProductSize(size)
+    //             setIsCheckedSmall(false)
+    //         } else {
+    //             setProductSize(productSize=>[...productSize, 'Small'])
+    //             setIsCheckedSmall(true)
+    //         }
+    //     }
+    //     if (event.target.id == "2") {
+    //         if (isCheckedMedium) {
+    //             const size = productSize.filter((item)=> {
+    //                 return item !== 'Medium'
+    //             })
+    //             setProductSize(size)
+    //             setIsCheckedMedium(false)
+    //         } else {
+    //             setProductSize(productSize=>[...productSize, 'Medium'])
+    //             setIsCheckedMedium(true)
+    //         }
+    //     }
+    //     if (event.target.id == "3") {
+    //         const size = productSize.filter((item)=> {
+    //             return item !== 'Large'
+    //         })
+    //         setProductSize(size)
+    //         if (isCheckedLarge) {
+    //             setIsCheckedLarge(false)
+    //         } else {
+    //             setProductSize(productSize=>[...productSize, 'Large'])
+    //             setIsCheckedLarge(true)
+    //         }
+    //     }
+    // }
 
     const handleOnChange = (event) => {
         setInputValue({...inputValue, [event.target.name]: event.target.value})
     }
+    console.log(props.product)
     
     useEffect(()=> { 
         if (product) {
-            setProductName(product.productName)
-            setProductImg(product.productImg)
-            setProductSale(product.productSale)
-            setProductPrice(product.productPrice)
-            setProductDes(product.productDes)
-            setProductCate(product.productCate)
-            setProductSex(product.productSex)
-            setProductSize(product.productSize)
-            setProductGroupCate(product.productGroupCate)
-            axios.get(`http://pe.heromc.net:4000/category`)
+            setProductName(product.name)
+            setProductImg(product.imgs)
+            setProductSale(product.sale)
+            setProductPrice(product.current_price)
+            setProductDes(product.description)
+            setProductCate(product.category_id)
+            setProductSex(product.type)
+            // setProductSize(product.productSize)
+            // setProductGroupCate(product.productGroupCate)
+            axios.get(`${URL_API_BASE}/category`)
                 .then(res => {
-                    setCate(res.data)
+                    setCate(res.data.data)
                 }
             )
-            axios.get(`http://pe.heromc.net:4000/products`)
-                .then(res => {
-                    const test = Object.values(res.data.reduce((a, {productGroupCate}) => {
-                        a[productGroupCate] = a[productGroupCate] || {productGroupCate};
-                        return a;
-                    }, Object.create(null)));
-                    setProductGroupCateList(test)
-                }
-            )
-            if (product.productSize) {
-                for (let i of product.productSize) {
-                    if(i == "Small") setIsCheckedSmall(true)
-                    if(i == "Medium") setIsCheckedMedium(true)
-                    if(i == "Large") setIsCheckedLarge(true)
-                }
-            }
+            // axios.get(`${URL_API_BASE}/product`)
+            //     .then(res => {
+            //         const test = Object.values(res.data.reduce((a, {productGroupCate}) => {
+            //             a[productGroupCate] = a[productGroupCate] || {productGroupCate};
+            //             return a;
+            //         }, Object.create(null)));
+            //         setProductGroupCateList(test)
+            //     }
+            // )
+            // if (product.productSize) {
+            //     for (let i of product.productSize) {
+            //         if(i == "Small") setIsCheckedSmall(true)
+            //         if(i == "Medium") setIsCheckedMedium(true)
+            //         if(i == "Large") setIsCheckedLarge(true)
+            //     }
+            // }
         }
     },[product])
 
@@ -118,19 +120,16 @@ export default function DashboardProductEdit(props) {
 
         const imageArr = Array.from(file);
         imageArr.forEach(image => {
-            formData.append('productImg', image);
+            formData.append('images', image);
         });
 
-        formData.append("productName", productName);
-        formData.append("productSale", productSale);
-        formData.append("productPrice", productPrice);
-        formData.append("productCate", productCate);
-        formData.append("productGroupCate", productGroupCate);
-        formData.append("productSize", productSize);
-        formData.append("productDes", productDes);
-        formData.append("productSex", productSex);
-        formData.append("productDate", new Date());
-        axios.post(`http://pe.heromc.net:4000/products/update/${product._id}`, formData, config)
+        formData.append("name", productName);
+        formData.append("sale", productSale);
+        formData.append("current_price", productPrice);
+        formData.append("category_id", productCate);
+        formData.append("description", productDes);
+        formData.append("type", productSex);
+        axios.put(`${URL_API_BASE}/product/${product.id}`, formData, config)
         .then(()=>{
             props.setCloseEditFunc(false);
             props.setToastFunc(true);
@@ -141,8 +140,8 @@ export default function DashboardProductEdit(props) {
     }
 
     const addNewCate = () => {
-        axios.post('http://pe.heromc.net:4000/category', {
-            cateName: inputValue.cate
+        axios.post(`${URL_API_BASE}/category`, {
+            name: inputValue.cate
         })
         setCate(cate=>[...cate, {cateName: inputValue.cate}])
         setProductCate(inputValue.cate)
@@ -164,7 +163,7 @@ export default function DashboardProductEdit(props) {
         const items = [...productImg]
         items.splice(id, 1)
         setProductImg(items)
-        axios.post(`http://pe.heromc.net:4000/products/update/${product._id}`, {
+        axios.put(`${URL_API_BASE}/product/${product.id}`, {
             deleteImgId: id
         })
     }
@@ -224,12 +223,12 @@ export default function DashboardProductEdit(props) {
                                         productImg.map((item, index) => {
                                             return (
                                                 <div className="create-box-img">
-                                                    <img key={index} src={item} alt=""></img>
+                                                    <img key={index} src={`${URL_IMAGE_BASE}/${item.replace('public\\', '').replaceAll('\\','/')}`} alt=""></img>
                                                     <div 
                                                         className="create-box-img-overlay"
                                                     >
                                                         <p
-                                                            id={index}
+                                                            id={item}
                                                             onClick={deleteImg}
                                                             className="icon">X
                                                         </p>
@@ -246,7 +245,7 @@ export default function DashboardProductEdit(props) {
                             <div className="dashboard-right">
                                 <input 
                                     type="number" name="price" 
-                                    placeholder="USD" 
+                                    placeholder="Price" 
                                     value={productPrice}
                                     onChange={(event)=>{
                                         setProductPrice(event.target.value)
@@ -266,13 +265,13 @@ export default function DashboardProductEdit(props) {
                                         setProductSale(event.target.value)
                                     }}
                                     required></input>
-                                <label>From: </label>
-                                <input type="date"  name="fromdate" onChange={handleOnChange} placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)"/>
-                                <label>To: </label>
-                                <input type="date"  name="todate" onChange={handleOnChange} placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)"/>
+                                {/* // <label>From: </label>
+                                // <input type="date"  name="fromdate" onChange={handleOnChange} placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)"/>
+                                // <label>To: </label>
+                                // <input type="date"  name="todate" onChange={handleOnChange} placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)"/> */}
                             </div>
                         </div>
-                        <div className="create-box-row flex">
+                        {/* <div className="create-box-row flex">
                             <div className="dashboard-left flex">Category group</div>
                             <div className="dashboard-right flex-center">
                                 <select style={{ width: "350px"}} 
@@ -305,7 +304,7 @@ export default function DashboardProductEdit(props) {
                                     Add
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="create-box-row flex">
                             <div className="dashboard-left flex">Category </div>
                             <div className="dashboard-right flex-center">
@@ -317,7 +316,7 @@ export default function DashboardProductEdit(props) {
                                     { cate.length > 0 &&
                                         cate.map((item, index) => {
                                             return(
-                                                <option key={index}>{item.cateName}</option>
+                                                <option key={index}>{item.name}</option>
                                             )
                                         })
                                     }
@@ -338,7 +337,7 @@ export default function DashboardProductEdit(props) {
                             </div>
                         </div>
                         <div className="create-box-row flex">
-                            <div className="dashboard-left flex">Sex </div>
+                            <div className="dashboard-left flex">Type </div>
                             <div className="dashboard-right flex">
                                 <select style={{ width: "200px"}} 
                                     onChange={(event) => {setProductSex(event.target.value)}}
@@ -350,7 +349,7 @@ export default function DashboardProductEdit(props) {
                                 </select>
                             </div>
                         </div>
-                        <div className="create-box-row flex">
+                        {/* <div className="create-box-row flex">
                             <div className="dashboard-left flex">Size </div>
                             <div className="dashboard-right flex">
                                 <div 
@@ -366,7 +365,7 @@ export default function DashboardProductEdit(props) {
                                     id="3" 
                                     onClick={checkedSize}>Large</div>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="create-box-row flex">
                             <div className="dashboard-left flex">Description </div>
                             <div className="dashboard-right">

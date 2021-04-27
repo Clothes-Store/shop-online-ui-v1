@@ -11,11 +11,11 @@ export default function DashboardProduct(props) {
         "Images",
         "Price",
         "Sale",
-        "Sold",
+        // "Sold",
         // "Category",    
         // "Size",
-        "Date",    
-        "Rating",
+        "Date created",    
+        // "Rating",
         "Action"
     ]
 

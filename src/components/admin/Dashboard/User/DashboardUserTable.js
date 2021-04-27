@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import classNames from 'classnames'
+import {URL_API_BASE, URL_IMAGE_BASE} from '../../../../config'
 
 export default function DashboardUserTable(props) {
 
@@ -13,8 +14,9 @@ export default function DashboardUserTable(props) {
     const [constUser, setConstUser] = useState([])
     
     useEffect(()=>{
-        axios.get(`http://pe.heromc.net:4000/users/list`)
+        axios.get(`${URL_API_BASE}/user/all`)
             .then(res => {
+                res.data = res.data.data
                 setUser(res.data)
                 setConstUser(res.data)
             }
@@ -158,10 +160,7 @@ export default function DashboardUserTable(props) {
                 </div>
                 <div className="topfive-content flex-col">
                     <div className="dashboard-addnew flex">
-                        <div 
-                            className="dashboard-addnew-btn btn"
-                            onClick={props.setOpenCreateFunc}
-                        >Add new</div>
+                        
                         <div className="dashboard-addnew-search">
                             <form 
                                 onSubmit={searchOnSubmit}
@@ -198,42 +197,42 @@ export default function DashboardUserTable(props) {
                                             <td style={{display: 'flex'}}>
                                                 <img 
                                                     className="table-mobile-useravt"
-                                                    src={item.userAvt} 
+                                                    src={`${URL_IMAGE_BASE}/${item.img.replace('public\\', '').replaceAll('\\','/')}`} 
                                                     width="70px" height="80px"
                                                     style={{padding: '5px 0', borderRadius: '50%'}}
                                                     alt=""
                                                 />
                                             </td>
                                             <td>
-                                                <p>{item.userName}</p>
+                                                <p>{item.name}</p>
                                             </td>
                                             <td className="table-mobile-useremail">
-                                                <p>{item.userEmail}</p>
+                                                <p>{item.email}</p>
                                             </td>
                                             <td className="table-mobile-userphone">
-                                                <p>{item.userPhone}</p>
+                                                <p>{item.phone}</p>
                                             </td>
                                             <td className="table-mobile-useraddress">
-                                                <p>{item.userAddress}, {item.userHuyen}, {item.userTinh}</p>
+                                                <p>{item.address}</p>
                                             </td>
-                                            <td>
+                                            {/* <td>
                                                 <div className="action-table flex">
                                                     <div 
                                                         className="action-item flex-center action-green"
                                                         onClick={props.setOpenEditFunc}
-                                                        id={item._id}
+                                                        id={item.id}
                                                         >
                                                         <FontAwesomeIcon style={{pointerEvents: 'none'}} icon={faPencilAlt}/>
                                                     </div>
                                                     <div 
                                                         className="action-item flex-center action-red"
                                                         onClick={deleteOnClick}
-                                                        id={item._id}
+                                                        id={item.id}
                                                         >
                                                         <FontAwesomeIcon style={{pointerEvents: 'none'}} icon={faTimes}/>
                                                     </div>
                                                 </div>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     )
                                 })

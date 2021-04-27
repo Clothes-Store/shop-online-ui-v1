@@ -7,6 +7,7 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { withRouter } from 'react-router-dom'
 import Div100vh from 'react-div-100vh';
+import {URL_API_BASE} from '../../../config'
 
 function Login(props) { 
 
@@ -28,15 +29,15 @@ function Login(props) {
     
     const handleOnSubmit = (event) => {
         event.preventDefault(); 
-        Axios.post('http://pe.heromc.net:4000/users/login', {
-            loginEmail: email,
-            loginPassword: password
+        Axios.post(`${URL_API_BASE}/user/login`, {
+            phone: email,
+            password: password
         })
         .then(res => {
             setArrSuccess(["Login success!"]) 
             setArrErr([]);
-            localStorage.setItem('token', res.data.token);
-            localStorage.setItem('user-id', res.data.user._id);
+            localStorage.setItem('token', res.data.datatoken);
+            localStorage.setItem('user-id', res.data.data.user.id);
             props.history.push('/admin/dashboard')
         })
         .catch(err => {
@@ -102,7 +103,7 @@ function Login(props) {
                         <form className="admin-login-form flex-col" onSubmit={handleOnSubmit}>
                             <input 
                                 type="text" 
-                                placeholder="Email" 
+                                placeholder="Phone" 
                                 value={email}
                                 onChange={(event)=>{
                                     setEmail(event.target.value)
