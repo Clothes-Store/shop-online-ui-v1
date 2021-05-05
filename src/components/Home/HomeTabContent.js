@@ -19,6 +19,7 @@ export default function HomeTabContent(props) {
 
     //Limit products
     const limitProducts = products.slice(0, limit);
+    console.log({limitProducts})
     
     return(
         <div>

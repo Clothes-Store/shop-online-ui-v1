@@ -12,6 +12,7 @@ export default function HomeTab() {
     useEffect(() => {
         axios.get(`${URL_API_BASE}/product`)
             .then(res => {
+                console.log(res.data.data)
                 setProducts(res.data.data)
             }
         )

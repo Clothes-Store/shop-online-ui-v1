@@ -262,7 +262,7 @@ export default function DashboardProductTable(props) {
                                             </td>
                                             <td className="table-mobile-productimages" style={{display: 'flex'}}>
                                                 <img 
-                                                    src={`${URL_IMAGE_BASE}/${item.imgs[0].img.replace('public\\', '').replaceAll('\\','/')}`} 
+                                                    src={`${URL_IMAGE_BASE}/${item.imgs[0].img?item.imgs[0].img.replace('public\\', '').replaceAll('\\','/'): item.imgs[0].replace('public\\', '').replaceAll('\\','/')}`} 
                                                     width="70px" height="80px"
                                                     style={{padding: '5px 0'}}
                                                     alt=""

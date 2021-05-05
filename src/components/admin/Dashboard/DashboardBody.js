@@ -49,38 +49,38 @@ export default function DashboardBody(props) {
         }, 3000)
     }
     
-    // useEffect(()=> {
-    //     Axios.get(`${URL_API_BASE}/product/${props.productId}`)
-    //         .then(res => {
-    //             setProduct(res.data.data)
-    //         } 
-    //     )
-    //     Axios.get(`http://pe.heromc.net:4000/news/${props.productId}`)
-    //         .then(res => {
-    //             setNews(res.data)
-    //         } 
-    //     )
-    //     Axios.get(`http://pe.heromc.net:4000/users/list/${props.productId}`)
-    //         .then(res => {
-    //             setUser(res.data)
-    //         } 
-    //     )
-    //     Axios.get(`http://pe.heromc.net:4000/order/${props.productId}`)
-    //         .then(res => {
-    //             setOrder(res.data)
-    //         } 
-    //     )
-    //     Axios.get(`http://pe.heromc.net:4000/collection/${props.productId}`)
-    //         .then(res => {
-    //             setCollection(res.data)
-    //         } 
-    //     )
-    //     Axios.get(`http://pe.heromc.net:4000/email/${props.productId}`)
-    //         .then(res => {
-    //             setEmail(res.data)
-    //         } 
-    //     )
-    // },[props.productId, props.openEdit])
+    useEffect(()=> {
+        Axios.get(`${URL_API_BASE}/product/${props.productId}`)
+            .then(res => {
+                setProduct(res.data.data)
+            } 
+        )
+        // Axios.get(`http://pe.heromc.net:4000/news/${props.productId}`)
+        //     .then(res => {
+        //         setNews(res.data)
+        //     } 
+        // )
+        // Axios.get(`http://pe.heromc.net:4000/users/list/${props.productId}`)
+        //     .then(res => {
+        //         setUser(res.data)
+        //     } 
+        // )
+        // Axios.get(`http://pe.heromc.net:4000/order/${props.productId}`)
+        //     .then(res => {
+        //         setOrder(res.data)
+        //     } 
+        // )
+        // Axios.get(`http://pe.heromc.net:4000/collection/${props.productId}`)
+        //     .then(res => {
+        //         setCollection(res.data)
+        //     } 
+        // )
+        // Axios.get(`http://pe.heromc.net:4000/email/${props.productId}`)
+        //     .then(res => {
+        //         setEmail(res.data)
+        //     } 
+        // )
+    },[props.productId, props.openEdit])
     const openMenuMobile = props.openMenuMobile;
 
     return (

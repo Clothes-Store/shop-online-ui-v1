@@ -147,7 +147,7 @@ function CheckoutBody(props) {
                                             <div
                                                 style={{width: '300px'}}
                                             >
-                                                <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img.replace('public\\', '').replaceAll('\\','/')}`} alt="" width="60px" height="60px"></img>
+                                                <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img?item.imgs[0].img.replace('public\\', '').replaceAll('\\','/'): item.imgs[0].replace('public\\', '').replaceAll('\\','/')}`} alt="" width="60px" height="60px"></img>
                                             </div>
                                             <div className="billing-detail-mobile">
                                                 <div className="billing-detail-name">{item.name}</div>
@@ -344,7 +344,7 @@ function CheckoutBody(props) {
                                         key={index}
                                         className="billing-detail-item"
                                     >
-                                        <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img.replace('public\\', '').replaceAll('\\','/')}`} alt="" width="60px" height="60px"></img>
+                                        <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img?item.imgs[0].img.replace('public\\', '').replaceAll('\\','/'): item.imgs[0].replace('public\\', '').replaceAll('\\','/')}`} alt="" width="60px" height="60px"></img>
                                         <div className="billing-detail-mobile">
                                             <div className="billing-detail-name">{item.name}</div>
                                             <div className="billing-detail-count">

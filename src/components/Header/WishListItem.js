@@ -32,7 +32,7 @@ export default function WishListItem(props) {
                         return (
                             <div className="cart-item flex" key={index}>
                                 <div className="cart-product-img">
-                                    <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img.replace('public\\', '').replaceAll('\\','/')}`} width="80px" height="100%" alt=""></img>
+                                    <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img?item.imgs[0].img.replace('public\\', '').replaceAll('\\','/'): item.imgs[0].replace('public\\', '').replaceAll('\\','/')}`} width="80px" height="100%" alt=""></img>
                                 </div>
                                 <div className="cart-product-mobile flex">
                                     <div className="cart-product-name flex" style={{alignItems: 'center', justifyContent: 'flex-start'}}>{item.name}</div>

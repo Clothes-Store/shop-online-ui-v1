@@ -39,7 +39,7 @@ export default function CartItem(props) {
                                 <div className="cart-product-img">
                                     {
                                         item.imgs &&
-                                        <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img.replace('public\\', '').replaceAll('\\','/')}`} width="80px" height="100%" alt=""></img>
+                                        <img src={`${URL_IMAGE_BASE}/${item.imgs[0].img?item.imgs[0].img.replace('public\\', '').replaceAll('\\','/'): item.imgs[0].replace('public\\', '').replaceAll('\\','/')}`} width="80px" height="100%" alt=""></img>
                                     }
                                 </div>
                                 {item.current_price &&
